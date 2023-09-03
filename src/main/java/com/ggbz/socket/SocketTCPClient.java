@@ -1,6 +1,7 @@
 package com.ggbz.socket;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -20,7 +21,16 @@ public class SocketTCPClient {
         OutputStream outputStream = socket.getOutputStream();
         //  3. 通过输出流，写入数据到数据通道
         outputStream.write("hello,server".getBytes());
-        //  4.关闭流对象和socket，必须关闭
+        //设置写入结束标记
+        socket.shutdownOutput();
+        //  4. 获取和socket关联的输入流，读取数据（字节）并显示
+        InputStream inputStream = socket.getInputStream();
+        byte[] buf = new byte[1024];
+        int readLen = 0;
+        while((readLen = inputStream.read(buf))!=-1){
+            System.out.println(new String(buf,0,readLen));
+        }
+        //  5.关闭流对象和socket，必须关闭
         outputStream.close();
         socket.close();
         System.out.println("客户端退出");
